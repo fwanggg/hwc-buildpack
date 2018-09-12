@@ -38,6 +38,12 @@ func (c *Compiler) Compile() error {
 		return err
 	}
 
+	err = c.InstallRiverbed()
+	if err != nil {
+		c.Log.Error("Unable to install Riverbed: %s", err.Error())
+		return err
+	}
+
 	return nil
 }
 
@@ -69,6 +75,12 @@ func (c *Compiler) CheckWebConfig() error {
 		return errMissingWebConfig
 	}
 	return nil
+}
+
+func (c *Compiler) InstallRiverbed() error{
+	c.Log.BeginStep("Installing Riverbed")
+	return nil
+
 }
 
 func (c *Compiler) InstallHWC() error {

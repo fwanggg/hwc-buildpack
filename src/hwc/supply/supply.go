@@ -1,7 +1,10 @@
 package supply
 
 import (
+	"fmt"
 	"io"
+	"io/ioutil"
+	"os"
 	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack"
@@ -9,6 +12,7 @@ import (
 
 type Stager interface {
 	//TODO: See more options at https://github.com/cloudfoundry/libbuildpack/blob/master/stager.go
+	//this is where app is located
 	BuildDir() string
 	DepDir() string
 	DepsIdx() string
@@ -20,6 +24,7 @@ type Manifest interface {
 	//TODO: See more options at https://github.com/cloudfoundry/libbuildpack/blob/master/manifest.go
 	AllDependencyVersions(string) []string
 	DefaultVersion(string) (libbuildpack.Dependency, error)
+	RootDir() string
 }
 
 type Installer interface {
@@ -42,6 +47,32 @@ type Supplier struct {
 	Log       *libbuildpack.Logger
 }
 
+func (s *Supplier) InstallRiverbed() error{
+	//check VCAP_SERVICES to make sure we are bound already
+	//check which fields
+	s.Log.BeginStep("Installing/SUpplying Riverbed")
+	s.Log.BeginStep("depdir" + s.Stager.DepDir())
+	//func ExtractTarGz(tarfile, destDir string) error
+	if err:=libbuildpack.ExtractTarGz(filepath.Join(s.Manifest.RootDir(),"panorama.tgz"),s.Stager.DepDir()); err!=nil{
+		return fmt.Errorf("extarct tgz: %s", err)
+	}
+	if err:=os.MkdirAll(filepath.Join(s.Stager.DepDir(),"profile.d"),0777); err!=nil{
+		return fmt.Errorf("os.MkdirAll: %s", err)
+	}
+
+	//DEPS_DIR
+	if err:=ioutil.WriteFile(filepath.Join(s.Stager.DepDir(),"profile.d","riverbed.bat"),[]byte(`C:\Users\vcap\deps\0\Panorama\hedzup\mn\bin\DotNetRegister64.exe
+	set COR_ENABLE_PROFILING=1
+	set COR_PROFILER={CEBBDDAB-C0A5-4006-9C04-2C3B75DF2F80}
+	`), 0777) ; err!=nil{
+		return fmt.Errorf("ioutil.WRiteFIle: %s", err)
+	}
+
+	//fmt.Println(exec.Command("find", s.Stager.DepDir()).Output())
+	return nil
+
+}
+
 func (s *Supplier) Run() error {
 	s.Log.BeginStep("Supplying hwc")
 
@@ -50,6 +81,6 @@ func (s *Supplier) Run() error {
 	if err := s.Installer.InstallDependency(dep, depDir); err != nil {
 		return err
 	}
-
+	s.InstallRiverbed()
 	return nil
 }

@@ -17,6 +17,7 @@ include_files:
 - NOTICE
 - README.md
 - VERSION
+- panorama.tgz
 - bin/compile
 - bin/detect
 - bin/detect.bat
