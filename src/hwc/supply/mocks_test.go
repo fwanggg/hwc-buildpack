@@ -142,6 +142,18 @@ func (mr *MockManifestMockRecorder) DefaultVersion(arg0 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DefaultVersion", reflect.TypeOf((*MockManifest)(nil).DefaultVersion), arg0)
 }
 
+// RootDir mocks base method
+func (m *MockManifest) RootDir() string {
+	ret := m.ctrl.Call(m, "RootDir")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// RootDir indicates an expected call of RootDir
+func (mr *MockManifestMockRecorder) RootDir() *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RootDir", reflect.TypeOf((*MockManifest)(nil).RootDir))
+}
+
 // MockInstaller is a mock of Installer interface
 type MockInstaller struct {
 	ctrl     *gomock.Controller

@@ -56,7 +56,7 @@ var _ = Describe("Supply", func() {
 
 		BeforeEach(func() {
 			depDir = "some-dep-dir"
-			mockStager.EXPECT().DepDir().Return(depDir)
+			mockStager.EXPECT().DepDir().Return(depDir).AnyTimes()
 			expectedDep = libbuildpack.Dependency{Name: "hwc", Version: "12.0.0"}
 			expectedDir = filepath.Join(depDir, "hwc")
 		})
@@ -78,5 +78,10 @@ var _ = Describe("Supply", func() {
 				Expect(err.Error()).To(Equal("some installer error"))
 			})
 		})
+
+		Context("riverbed appinternals service", func() {
+			//set a fake VCAP_SERVICES with appinternals in it
+		})
+
 	})
 })

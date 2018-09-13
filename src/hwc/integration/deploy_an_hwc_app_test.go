@@ -13,6 +13,9 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+
+//TODO: add in appinternals integration test
+
 var _ = Describe("CF HWC Buildpack", func() {
 	var (
 		app        *cutlass.App

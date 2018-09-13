@@ -48,6 +48,8 @@ type Supplier struct {
 }
 
 func (s *Supplier) InstallRiverbed() error{
+	//todo:
+	//return nil if no appinternals in VCAP_SERVICES, this would also fix unittest
 	//check VCAP_SERVICES to make sure we are bound already
 	//check which fields
 	s.Log.BeginStep("Installing/SUpplying Riverbed")
@@ -60,8 +62,9 @@ func (s *Supplier) InstallRiverbed() error{
 		return fmt.Errorf("os.MkdirAll: %s", err)
 	}
 
-	//DEPS_DIR
-	if err:=ioutil.WriteFile(filepath.Join(s.Stager.DepDir(),"profile.d","riverbed.bat"),[]byte(`C:\Users\vcap\deps\0\Panorama\hedzup\mn\bin\DotNetRegister64.exe
+	//s.Stager.DepDir() is depdir in staging process
+	//%DEPS_DIR% should be used at runtime
+	if err:=ioutil.WriteFile(filepath.Join(s.Stager.DepDir(),"profile.d","riverbed.bat"),[]byte(`%DEPS_DIR%\`+ s.Stager.DepsIdx() +`\Panorama\hedzup\mn\bin\DotNetRegister64.exe
 	set COR_ENABLE_PROFILING=1
 	set COR_PROFILER={CEBBDDAB-C0A5-4006-9C04-2C3B75DF2F80}
 	`), 0777) ; err!=nil{
